@@ -4,7 +4,7 @@ import CommentPage from './components/CommentPage.vue';
 
 const routes = [
   { path: '/', component: HomePage },
-  { path: '/comments', component: CommentPage },
+  { path: '/comments', component: CommentPage, name: 'CommentPage' }, // Make sure the name property is set
 ];
 
 const router = createRouter({
