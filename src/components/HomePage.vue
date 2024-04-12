@@ -39,9 +39,18 @@
       };
     },
     methods: {
-      handleSubmit() {
-        this.$router.push({ name: 'CommentPage', query: { text: this.snippetText } });
-      },
+        handleSubmit() {
+  // Assuming you have data properties for title and technologies in HomePage.vue
+  this.$router.push({
+    name: 'CommentPage',
+    query: {
+      text: this.snippetText,
+      title: this.snippetTitle,
+      technologies: this.languageId // or a separate technologies property if you have one
+    }
+  });
+}
+,
       autoResizeTextarea(event) {
       event.target.style.height = 'auto';
       event.target.style.height = (event.target.scrollHeight) + 'px';
