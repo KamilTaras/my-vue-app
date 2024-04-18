@@ -1,22 +1,22 @@
 <template>
-  <div id="app">
-    <router-view/>
+  <div class="min-h-screen bg-gray-800 text-white">
+    <NavigationBar></NavigationBar>
+    <div id="app">
+      <router-view/>
+    </div>
+    <FooterBar></FooterBar>
   </div>
 </template>
 
 <script>
+import NavigationBar from './components/NavigationBar.vue';
+import FooterBar from './components/FooterBar.vue';
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    NavigationBar,
+    FooterBar,
+}
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  /* margin-top: 60px; */
-}
-</style>
