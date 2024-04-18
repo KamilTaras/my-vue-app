@@ -7,12 +7,17 @@
         </div>
       </nav>
       <main>
+        
+
         <form @submit.prevent="handleSubmit" class="snippet-form">
           <div class="form-group">
             <input type="text" v-model="snippetTitle" placeholder="Snippet Title" />
           </div>
           <div class="form-group">
-            <textarea v-model="snippetText" @input="autoResizeTextarea" class="autosize" placeholder="Snippet Text"></textarea>
+            <code-editor width="100%" line-nums="true" v-model="snippetText" theme="github-dark" :languages="[['cpp', 'C++'],['javascript','javascript']]">
+
+            </code-editor>
+            <!-- <textarea  @input="autoResizeTextarea" class="autosize" placeholder="Snippet Text"></textarea> -->
         </div>
           <div class="form-group">
             <input type="text" v-model="languageId" placeholder="Program Language ID" />
@@ -22,14 +27,22 @@
               <input type="checkbox" v-model="isPrivate" /> Private Snippet
             </label>
           </div>
-          <button type="submit" class="submit-btn">Post It</button>
+          <div class="form-group">
+            <button type="submit" class="submit-btn">Post It</button>
+          </div>
         </form>
       </main>
     </div>
   </template>
   
   <script>
+  //import hljs from 'highlight.js';
+  import CodeEditor from './CodeEditor.vue';
+  //hljs.registerLanguage('javascript', javascript);
   export default {
+    components: {
+      CodeEditor
+    },
     data() {
       return {
         snippetTitle: '',
@@ -87,7 +100,13 @@
   }
   
   .form-group {
+    margin: auto;
+    width:50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 1rem;
+
   }
   
   input[type="text"],
