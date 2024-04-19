@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomePage from './components/HomePage.vue';
-import CommentPage from './components/CommentPage.vue';
+import HomePage from './views/HomePage.vue';
+import CommentPage from './views/CommentPage.vue';
 import ExploreSnippets from './views/ExploreSnippets.vue';
 import CodeSnippetPage from './views/CodeSnippetPage.vue';
 

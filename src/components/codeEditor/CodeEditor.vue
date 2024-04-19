@@ -105,8 +105,8 @@
 import hljs from "highlight.js";
 import DropdownMenu from "./Dropdown.vue";
 import CopyCode from "./CopyCode.vue";
-import "../assets/themes-base16.css";
-import "../assets/themes.css";
+import "./themes-base16.css";
+import "./themes.css";
 
 export default {
   components: {

@@ -12,7 +12,7 @@
         </div>
         <div class="flex justify-end px-10 pb-5 pt-10 text-xl">
           <label>
-            <input type="checkbox" v-model="isPrivate" class="h-4 w-4 px-4"/> Private Snippet
+            <input type="checkbox" v-model="isPrivate" class="h-4 w-4"/> Private Snippet
           </label>
         </div>
         <div class="flex justify-end px-10 pt-5 pb-10">
@@ -24,7 +24,7 @@
 <script>
 import axios from 'axios';
 //import hljs from 'highlight.js';
-import CodeEditor from './CodeEditor.vue';
+import CodeEditor from '../components/codeEditor/CodeEditor.vue';
 import Config from '../config.js';
 //hljs.registerLanguage('javascript', javascript);
 export default {
