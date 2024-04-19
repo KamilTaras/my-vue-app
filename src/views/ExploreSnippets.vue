@@ -15,16 +15,18 @@
         class="bg-gray-600 text-white p-2 rounded outline-none"
       />
     </div>
+    
     <!-- Code snippets list -->
     <div v-if="filteredSnippets.length">
       <CodeSnippetPreview
         v-for="snippet in filteredSnippets"
-        :key="snippet.codeSnippetID"
+        :key="snippet.CodeSnippetID"
         :title="snippet.title"
         username="anonymous"
         :code="snippet.Text"
         :date="convertToReadableFormat(snippet.CreatedAt)"
-        language="Python"
+        language="python"
+        :snippetId="snippet.CodeSnippetID"
       />
     </div>
 
@@ -32,6 +34,7 @@
     <div v-else class="text-center text-gray-400 my-5">
       Snippets not found
     </div>
+
 </template>
 
 <script>
