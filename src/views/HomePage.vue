@@ -58,7 +58,7 @@ export default {
       axios.get(Config.BACKEND_URL+'/api/v1/program_language/')
         .then(response => {
           //this.languages = response.data.data.map(language => [language.ProgramLanguageID, language.Name]);
-          this.languages = response.data.data.map(language => ["javascript", language.Name]);//Temporary to test highlighting
+          this.languages = response.data.data.map(language => [language.ProgramLanguageID, language.Name]);//Temporary to test highlighting
           this.languageId = this.languages[0][0]; 
         })
         .catch(error => {
@@ -77,12 +77,11 @@ export default {
         isDraft: false,
         isPrivate: this.isPrivate
       };
-
+      console.log(snippetData); 
       axios.post(Config.BACKEND_URL+'/api/v1/code_snippet/', snippetData)
         .then(response => {
           console.log('Snippet created:', response.data);
-          return true
-          // Optionally, you can redirect or perform other actions after successful creation
+          this.$router.push("/code_snippet/" + response.data.data.CodeSnippetID);
         })
         .catch(error => {
           console.error('Error creating snippet:', error);
