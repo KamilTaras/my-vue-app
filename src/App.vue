@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-800 text-white">
+  <div class="flex flex-col h-screen bg-gray-800 text-white">
     <NavigationBar></NavigationBar>
-    <div id="app">
+    <div id="app" class="flex-grow bg-gray-800">
       <router-view/>
     </div>
     <FooterBar></FooterBar>
