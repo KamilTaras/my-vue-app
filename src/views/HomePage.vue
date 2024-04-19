@@ -4,9 +4,11 @@
           <input type="text" v-model="snippetTitle" placeholder="Snippet Title" class = "bg-gray-600 text-white py-2 px-4 rounded outline-none text-2xl font-semibold" />
         </div>
         <div class="flex-grow px-10">
+          
           <code-editor width="100%" height="100%" line-nums="true" v-model="snippetText" theme="github-dark"
-            :languages="languages"
-            @lang="getLanguage">
+            @lang="getLanguage" :languages="languages" 
+            >
+
           </code-editor>
           <!-- <textarea  @input="autoResizeTextarea" class="autosize" placeholder="Snippet Text"></textarea> -->
         </div>
@@ -57,8 +59,7 @@ export default {
     fetchLanguages() {
       axios.get(Config.BACKEND_URL+'/api/v1/program_language/')
         .then(response => {
-          //this.languages = response.data.data.map(language => [language.ProgramLanguageID, language.Name]);
-          this.languages = response.data.data.map(language => ["javascript", language.Name]);//Temporary to test highlighting
+          this.languages = response.data.data.map(language => [language.ProgramLanguageID, language.Name]);
           this.languageId = this.languages[0][0]; 
         })
         .catch(error => {

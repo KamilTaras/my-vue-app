@@ -7,7 +7,7 @@ import CodeSnippetPage from './views/CodeSnippetPage.vue';
 const routes = [
   { path: '/', component: HomePage },
   { path: '/explore', component: ExploreSnippets },
-  { path: '/comments', component: CommentPage, name: 'CommentPage' },
+  { path: '/comments/:code_snippet_id:', component: CommentPage, name: 'CommentPage' },
   { path: '/code_snippet/:code_snippet_id', component: CodeSnippetPage}
 ];
 

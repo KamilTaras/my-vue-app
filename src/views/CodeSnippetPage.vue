@@ -8,6 +8,7 @@
                     :code="codeSnippet.Text" />
                 <div class="flex justify-between">
                 <p class="text-gray-400 mt-3">{{ convertToReadableFormat(codeSnippet.CreatedAt) }}</p>
+                <RouterLink :to ="`/comments/${codeSnippetId}`">Add comment</RouterLink>
                 </div>
             </div>
         </div>
@@ -27,6 +28,7 @@ export default {
     data() {
         return {
             codeSnippet: null,
+            codeSnippetId: null,
         };
     },
     created() {
@@ -38,6 +40,7 @@ export default {
             axios.get('http://52.211.23.142/api/v1/code_snippet/' + this.$route.params.code_snippet_id)
                 .then(response => {
                         console.log(response.data.data);
+                        this.codeSnippetId = this.$route.params.code_snippet_id
                         this.codeSnippet = response.data.data;
                     }
                 )

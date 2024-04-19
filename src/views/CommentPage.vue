@@ -1,12 +1,4 @@
 <template>
-    <div id="app">
-      <nav class="navbar">
-        <div class="logo">SnippetSavvy</div>
-        <div class="menu">
-          <!-- You can add links or buttons here for navigation -->
-        </div>
-      </nav>
-      <main>
         <h1>{{ snippetTitle }}</h1>
         <div v-for="(line, index) in lines" :key="index" class="line-container">
           <p @mouseover="hover = index" @mouseleave="hover = null" @click="selectLine(index)">
@@ -24,11 +16,10 @@
         <div class="technologies">
           {{ technologies }}
         </div>
-      </main>
-    </div>
   </template>
   
   <script>
+  import axios from 'axios';
   export default {
     data() {
       return {
@@ -39,9 +30,27 @@
         comments: {},
         selectedLineIndex: null,
         hover: null, // For tracking hover state on lines
+        codeSnippetId: null
       };
     },
+    created() {
+        this.fetchCodeSnippet();
+    },
     methods: {
+      fetchCodeSnippet() {
+            console.log(this.$route.params.code_snippet_id);
+            axios.get('http://52.211.23.142/api/v1/code_snippet/' + this.$route.params.code_snippet_id)
+                .then(response => {
+                        console.log(response.data.data);
+                        this.codeSnippetId = this.$route.params.code_snippet_id
+                        this.lines = response.data.data.Text.split('\n');
+                        
+                    }
+                )
+                .catch(error => {
+                    console.error('There was an error fetching the code snippet:', error);
+                });
+        },
       selectLine(index) {
         // Toggle selection only if there's no comment for the line
         if (!this.comments[index]) {
@@ -54,16 +63,8 @@
         this.editableComments[index] = ''; // Clear the editable comment
         this.selectedLineIndex = null; // Deselect the line after submitting the comment
       }
-    },
-    created() {
-      const text = this.$route.query.text;
-      this.snippetTitle = this.$route.query.title || 'Untitled Snippet';
-      this.technologies = this.$route.query.technologies || 'Unknown Technologies';
-      if (text) {
-        this.lines = text.split('\n');
-      }
-    },
-  };
+    }
+  }
   </script>
   
   <style scoped>
