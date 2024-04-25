@@ -4,12 +4,20 @@
       <RouterLink to="/">CodeSnippet</RouterLink>
     </span>
     <div class="flex items-center">
-      <!-- Notification Icon -->
+      <!-- Notification Icon and Dropdown -->
       <span class="relative mr-3 flex items-center">
-        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.15V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 5.659 6 8.289 6 11v3.15c0 .415-.152.8-.395 1.145L4 17h5m6 0v2a2 2 0 11-4 0v-2m4 0H9"></path>
-        </svg>
-        <span class="absolute -top-1 -right-1 block h-3 w-3 rounded-full text-center text-xs text-white bg-red-600">3</span>
+        <button @click="toggleNotifications">
+          <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.15V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 5.659 6 8.289 6 11v3.15c0 .415-.152.8-.395 1.145L4 17h5m6 0v2a2 2 0 11-4 0v-2m4 0H9"></path>          </svg>
+          <span class="absolute -top-1 -right-1 block h-3 w-3 rounded-full text-center text-xs text-white bg-red-600">3</span>
+        </button>
+        <!-- Notifications Dropdown -->
+        <div v-if="showNotifications" class="absolute mt-2 py-2 w-48 bg-white rounded-lg shadow-xl">
+          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Reply from User A</a>
+          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Reply from User B</a>
+          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Reply from User C</a>
+          <!-- ... more notifications -->
+        </div>
       </span>
       <!-- Navigation Links -->
       <RouterLink to="/" class="text-green-300 hover:text-white px-3">Create</RouterLink>
@@ -24,6 +32,19 @@
 
 <script>
 export default {
-  name: 'NavigationBar'
+  name: 'NavigationBar',
+  data() {
+    return {
+      showNotifications: false,
+      // ... other data properties
+    };
+  },
+  methods: {
+    toggleNotifications() {
+      this.showNotifications = !this.showNotifications;
+    },
+    // ... other methods
+  },
+  // ... other component options
 }
 </script>
