@@ -48,7 +48,7 @@
 
 <script>
 import axios from 'axios';
-
+import Config from '../config.js';
 export default {
     name: "CodeSnippetPage",
     data() {
@@ -80,7 +80,7 @@ export default {
 
         fetchCodeSnippet() {
             console.log(this.$route.params.code_snippet_id);
-            axios.get('http://52.211.23.142/api/v1/code_snippet/' + this.$route.params.code_snippet_id)
+            axios.get(Config.BACKEND_URL+'/api/v1/code_snippet/' + this.$route.params.code_snippet_id)
                 .then(response => {
                         console.log(response.data.data);
                         this.codeSnippet = response.data.data;

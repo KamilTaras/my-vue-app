@@ -41,7 +41,7 @@
 import axios from 'axios';
 
 import CodeSnippetPreview from "@/components/CodeSnippetPreview.vue"
-
+import Config from "../config.js"
 export default {
     name: "ExploreSnippets",
     components: { CodeSnippetPreview },
@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         fetchCodeSnippets() {
-            axios.get('http://52.211.23.142/api/v1/code_snippet/')
+            axios.get(Config.BACKEND_URL+'/api/v1/code_snippet/')
                 .then(response => {
                         this.codeSnippets = response.data.data.map(snippet => ({
                             ...snippet,
@@ -75,7 +75,7 @@ export default {
         },
 
         fetchProgrammingLanguages() {
-            axios.get('http://52.211.23.142/api/v1/program_language/')
+            axios.get(Config.BACKEND_URL+'/api/v1/program_language/')
                 .then(response => {
                         this.languages = response.data.data;
                     }
