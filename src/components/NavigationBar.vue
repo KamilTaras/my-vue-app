@@ -24,9 +24,9 @@
       </span>
       <RouterLink to="/" class="text-green-300 hover:text-white px-3">Create</RouterLink>
       <RouterLink to="/explore" class="text-gray-300 hover:text-white px-3">Explore snippets</RouterLink>
-      <RouterLink v-if="isAuthenticated()" to="/my-code-snippets" class="text-gray-300 hover:text-white px-3">My snippets</RouterLink>
-      <RouterLink v-if="isAuthenticated() == false" to="/login" class="text-gray-300 hover:text-white px-3">Login</RouterLink>
-      <p v-if="isAuthenticated()" @click="logout" class="text-gray-300 hover:text-white px-3">Logout</p>
+      <RouterLink v-if="isAuthenticated" to="/my-code-snippets" class="text-gray-300 hover:text-white px-3">My snippets</RouterLink>
+      <RouterLink v-else to="/login" class="text-gray-300 hover:text-white px-3">Login</RouterLink>
+      <p v-if="isAuthenticated" @click="logout" class="text-gray-300 hover:text-white px-3">Logout</p>
     </div>
   </nav>
 </template>
@@ -47,13 +47,7 @@ export default {
   created() {
     this.fetchLatestPosts();
   },
-  methods: {
-    logout() {
-      localStorage.removeItem('user-token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('user-id');
-      this.$router.push("/");
-    },
+  computed: {
     isAuthenticated() {
       const token = localStorage.getItem('user-token');
       if (!token) {
@@ -66,7 +60,17 @@ export default {
       } catch (e) {
         return false; // If there's an error, assume the token is invalid
       }
+    }
+  },
+  methods: {
+    
+    logout() {
+      localStorage.removeItem('user-token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('user-id');
+      this.$forceUpdate();
     },
+    
     toggleNotifications(event) {
       event.stopPropagation();
       this.showNotifications = !this.showNotifications;

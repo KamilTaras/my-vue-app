@@ -72,6 +72,7 @@ export default {
     sendSnippet() {
       const snippetData = {
         Title: this.snippetTitle,
+        UserID: localStorage.getItem('user_id'),
         isArchived: false, // Assuming default values
         isDraft: false,
         isPrivate: this.isPrivate

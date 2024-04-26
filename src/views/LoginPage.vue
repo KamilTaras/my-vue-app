@@ -53,6 +53,7 @@ export default {
                         localStorage.setItem('username', data.username);
                         localStorage.setItem('user_id', data.user_id);
                         axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`; // Set default header for all requests
+                        this.$forceUpdate();
                         this.$router.push("/");
                     }
                 )
