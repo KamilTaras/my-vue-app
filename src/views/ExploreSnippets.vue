@@ -21,11 +21,11 @@
       <CodeSnippetPreview
         v-for="snippet in filteredSnippets"
         :key="snippet.CodeSnippetID"
-        :title="snippet.title"
-        username="anonymous"
-        :code="snippet.Text"
+        :title="snippet.Title"
+        :username="snippet.User ? snippet.User.username : 'anonymous'"
+        :code="snippet.CodeSnippetVersions.length > 0 ? snippet.CodeSnippetVersions[snippet.CodeSnippetVersions.length - 1].Text : 'No code version is available'"
         :date="convertToReadableFormat(snippet.CreatedAt)"
-        language="python"
+        :language="snippet.CodeSnippetVersions.length > 0 ? snippet.CodeSnippetVersions[snippet.CodeSnippetVersions.length - 1].ProgramLanguage.Name : 'none'"
         :snippetId="snippet.CodeSnippetID"
       />
     </div>
@@ -62,10 +62,8 @@ export default {
         fetchCodeSnippets() {
             axios.get(Config.BACKEND_URL+'/api/v1/code_snippet/')
                 .then(response => {
-                        this.codeSnippets = response.data.data.map(snippet => ({
-                            ...snippet,
-                            title: `Snippet`, 
-                        }));
+                        this.codeSnippets = response.data.data;
+                        console.log(this.codeSnippets);
                         this.filteredSnippets = this.codeSnippets;
                     }
                 )
