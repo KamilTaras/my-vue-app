@@ -1,7 +1,7 @@
 <template>
       <form @submit.prevent="handleSubmit" class = "flex flex-col h-full">
         <div class = "p-10">
-          <input type="text" v-model="snippetTitle" placeholder="Snippet Title" class = "bg-gray-600 text-white py-2 px-4 rounded outline-none text-2xl font-semibold" />
+          <input type="text" v-model="snippetTitle" placeholder="Title" class = "bg-gray-600 text-white py-2 px-4 rounded outline-none text-2xl font-semibold" />
         </div>
         <div class="flex-grow px-10">
           <code-editor width="100%" height="100%" line-nums="true" v-model="snippetText" theme="github-dark"
@@ -71,22 +71,35 @@ export default {
     },
     sendSnippet() {
       const snippetData = {
-        Text: this.snippetText,
-        ProgramLanguageID: this.languageId,
+        Title: this.snippetTitle,
         isArchived: false, // Assuming default values
         isDraft: false,
         isPrivate: this.isPrivate
       };
       console.log(snippetData); 
+      let codeSnippetID = null;
       axios.post(Config.BACKEND_URL+'/api/v1/code_snippet/', snippetData)
         .then(response => {
-          console.log('Snippet created:', response.data);
-          this.$router.push("/code_snippet/" + response.data.data.CodeSnippetID);
+          codeSnippetID = response.data.data.CodeSnippetID;
+          console.log(codeSnippetID);
+
+          const snippetVersionData = {
+            CodeSnippetID: codeSnippetID,
+            Text: this.snippetText,
+            ProgramLanguageID: this.languageId,
+          };
+
+          return axios.post(Config.BACKEND_URL+'/api/v1/code_snippet_version/', snippetVersionData);
+        })
+        .then(response => {
+          console.log('Snippet version created:', response.data);
+          this.$router.push("/code_snippet/" + codeSnippetID);
         })
         .catch(error => {
           console.error('Error creating snippet:', error);
           return false;
         });
+      
     },
     handleSubmit() {
       if(this.sendSnippet()){

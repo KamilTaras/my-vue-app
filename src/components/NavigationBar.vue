@@ -24,7 +24,9 @@
       </span>
       <RouterLink to="/" class="text-green-300 hover:text-white px-3">Create</RouterLink>
       <RouterLink to="/explore" class="text-gray-300 hover:text-white px-3">Explore snippets</RouterLink>
-      <a href="#my-snippets" class="text-gray-300 hover:text-white px-3">My snippets</a>
+      <RouterLink v-if="isAuthenticated()" to="/my-code-snippets" class="text-gray-300 hover:text-white px-3">My snippets</RouterLink>
+      <RouterLink v-if="isAuthenticated() == false" to="/login" class="text-gray-300 hover:text-white px-3">Login</RouterLink>
+      <p v-if="isAuthenticated()" @click="logout" class="text-gray-300 hover:text-white px-3">Logout</p>
     </div>
   </nav>
 </template>
@@ -39,12 +41,32 @@ export default {
     return {
       showNotifications: false,
       latestPosts: [],
+      username: localStorage.getItem("username"),
     };
   },
   created() {
     this.fetchLatestPosts();
   },
   methods: {
+    logout() {
+      localStorage.removeItem('user-token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('user-id');
+      this.$router.push("/");
+    },
+    isAuthenticated() {
+      const token = localStorage.getItem('user-token');
+      if (!token) {
+        return false;
+      }
+
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1])); // Decode payload of the token
+        return payload.exp > Date.now() / 1000; // Check if token is expired
+      } catch (e) {
+        return false; // If there's an error, assume the token is invalid
+      }
+    },
     toggleNotifications(event) {
       event.stopPropagation();
       this.showNotifications = !this.showNotifications;

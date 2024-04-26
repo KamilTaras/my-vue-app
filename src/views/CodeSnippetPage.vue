@@ -1,27 +1,29 @@
 <template>
     <div>
         <div v-if="codeSnippet">
-            <code-to-comment :Text = "codeSnippet.Text" :CreatedAt = "codeSnippet.CreatedAt" @lines = "getLines"></code-to-comment>
-            <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5" 
-            v-for="comment in comments"
-            :key="comment.id">
-                <p class="text-gray-400 mb-4">@anonymous</p>
-                <p><span class="text-xs font-semibold text-blue-100 bg-blue-600 px-2 py-1 rounded">Line: {{ comment.lines[0] }}-{{ comment.lines[comment.lines.length-1] }}</span></p>
-                <div class="w-full p-2 text-gray-300 bg-gray-800 rounded">
-                    {{ comment.text }}
+            <div v-for="codeSnippetVersion in codeSnippet.CodeSnippetVersions" :key="codeSnippetVersion.CodeSnippetVersionID">
+                <code-to-comment :Text = "codeSnippetVersion.Text" :CreatedAt = "codeSnippet.CreatedAt" :Username="codeSnippet.User ? codeSnippet.User.username : 'anonymous'" @lines = "getLines"></code-to-comment>
+                <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5" 
+                v-for="comment in comments"
+                :key="comment.id">
+                    <p class="text-gray-400 mb-4">@anonymous</p>
+                    <p><span class="text-xs font-semibold text-blue-100 bg-blue-600 px-2 py-1 rounded">Line: {{ comment.lines[0] }}-{{ comment.lines[comment.lines.length-1] }}</span></p>
+                    <div class="w-full p-2 text-gray-300 bg-gray-800 rounded">
+                        {{ comment.text }}
+                    </div>
+                    <div class="flext">
+                    <p class="text-gray-400 mt-3">{{ comment.date }}</p>
+                    </div>
                 </div>
-                <div class="flext">
-                 <p class="text-gray-400 mt-3">{{ comment.date }}</p>
-                </div>
-            </div>
 
-            <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5">
-                <div class="flex flex-col space-y-4">
-                    <textarea class="w-full p-2 text-gray-300 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                              placeholder="Add a comment..."
-                              v-model="commentText"></textarea>
-                    <button class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded"
-                            @click="submitComment()">Submit Comment</button>
+                <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5">
+                    <div class="flex flex-col space-y-4">
+                        <textarea class="w-full p-2 text-gray-300 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Add a comment..."
+                                v-model="commentText"></textarea>
+                        <button class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded"
+                                @click="submitComment()">Submit Comment</button>
+                    </div>
                 </div>
             </div>
         </div>

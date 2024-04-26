@@ -1,9 +1,7 @@
 <template>
     <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5" @mousedown="startSelection" @mouseup="stopSelection">
-        <p class="text-gray-400 mb-4">@anonymous</p>
+        <p class="text-gray-400 mb-4">@{{ this.Username }}</p>
         <div class='bg-black p-2 rounded'>
-
-        
         <div v-for="(line, index) in Text.split('\n')" :key="index" 
             :class="{ 'bg-blue-800': selectedLines.includes(index + 1) || lastSelectedLines.includes(index + 1)}"
             :data-line="index + 1" @mouseenter="addToSelection" 
@@ -23,6 +21,7 @@ export default {
     props: {
         Text: String,
         CreatedAt: String,
+        Username: String,
     },
     data() {
         return {
