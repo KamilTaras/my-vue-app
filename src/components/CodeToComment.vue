@@ -1,12 +1,16 @@
 <template>
     <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5" @mousedown="startSelection" @mouseup="stopSelection">
         <p class="text-gray-400 mb-4">@anonymous</p>
+        <div class='bg-black p-2 rounded'>
+
+        
         <div v-for="(line, index) in Text.split('\n')" :key="index" 
-            :class="{ 'bg-yellow-200': selectedLines.includes(index + 1) || lastSelectedLines.includes(index + 1)}"
+            :class="{ 'bg-blue-800': selectedLines.includes(index + 1) || lastSelectedLines.includes(index + 1)}"
             :data-line="index + 1" @mouseenter="addToSelection" 
             @mousedown = "firstAddToSelection" >
             <pre>{{index+1}}	{{ line }}</pre>
         </div>
+    </div>
         <div class="flex justify-between">
             <p class="text-gray-400 mt-3">{{ convertToReadableFormat(CreatedAt) }}</p>
         </div>
