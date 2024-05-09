@@ -24,9 +24,13 @@
       </span>
       <RouterLink to="/" class="text-green-300 hover:text-white px-3">Create</RouterLink>
       <RouterLink to="/explore" class="text-gray-300 hover:text-white px-3">Explore snippets</RouterLink>
+      
       <RouterLink v-if="isAuthenticated" to="/my-code-snippets" class="text-gray-300 hover:text-white px-3">My snippets</RouterLink>
-      <RouterLink v-else to="/login" class="text-gray-300 hover:text-white px-3">Login</RouterLink>
-      <p v-if="isAuthenticated" @click="logout" class="text-gray-300 hover:text-white px-3">Logout</p>
+      <RouterLink v-if="isAuthenticated" to="/profile" class="text-gray-300 hover:text-white px-3">Profile</RouterLink>
+      <a href="#" v-if="isAuthenticated" @click="logout" class="text-gray-300 hover:text-white px-3">Logout</a>
+      
+      <RouterLink v-if="!isAuthenticated" to="/login" class="text-gray-300 hover:text-white px-3">Login</RouterLink>
+      <RouterLink v-if="!isAuthenticated" to="/signup" class="text-gray-300 hover:text-white px-3">Signup</RouterLink>
     </div>
   </nav>
 </template>
@@ -68,7 +72,7 @@ export default {
       localStorage.removeItem('user-token');
       localStorage.removeItem('username');
       localStorage.removeItem('user-id');
-      this.$forceUpdate();
+      window.location.href = '/';
     },
     
     toggleNotifications(event) {
