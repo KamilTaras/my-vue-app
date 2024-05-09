@@ -12,11 +12,12 @@
           <span class="absolute -top-1 -right-1 block h-3 w-3 rounded-full text-center text-xs text-white bg-red-600" v-if="latestPosts.length > 0">{{ latestPosts.length }}</span>
         </button>
         <div v-if="showNotifications" class="absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
-          <template v-for="post in latestPosts" :key="post.id">
-            <a :href="'/post/' + post.id" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              {{ post.title }} - {{ post.author }}
+          <template v-for="post in latestPosts" :key="post.CodeSnippetID">
+            <a :href="'/code_snippet/' + post.CodeSnippetID" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              {{ post.Title }} <!-- Displaying the title of each code snippet -->
             </a>
           </template>
+          
           <div v-if="latestPosts.length === 0" class="text-center text-gray-400 py-2">
             No new notifications
           </div>
@@ -85,15 +86,26 @@ export default {
       }
     },
     fetchLatestPosts() {
-      axios.get(Config.BACKEND_URL + '/api/v1/post/') 
-        .then(response => {
-          // Assuming the API sends back an array of posts sorted by creation date
-          this.latestPosts = response.data.data.slice(0, 3);
-        })
-        .catch(error => {
-          console.error('There was an error fetching the latest posts:', error);
-        });
-    },
+  let user_token = localStorage.getItem('user-token');
+  let user_id = localStorage.getItem('user_id');
+  axios.defaults.headers.common['Authorization'] = `Bearer ${user_token}`; // Set default header for all requests
+  axios.get(Config.BACKEND_URL + '/api/v1/user_code_snippet/' + user_id)
+    .then(response => {
+      // Log the full response data to see the structure
+      console.log('Full response:', response.data);
+
+      // Assume the relevant data is in response.data.data
+      let codeSnippets = response.data.data.filter(snippet => snippet.CodeSnippetVersions.length > 0);
+      console.log('Filtered snippets:', codeSnippets);
+      
+      // Assign to latestPosts in the component's data
+      this.latestPosts = codeSnippets;
+    })
+    .catch(error => {
+      console.error('There was an error fetching the code snippets:', error);
+    });
+}
+
   },
   mounted() {
     window.addEventListener('click', this.closeNotifications);
