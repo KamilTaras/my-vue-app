@@ -1,5 +1,6 @@
 <template>
     <div class="max-w-2xl flex justify-between items-center mx-auto mt-5 rounded">
+      <h2>My snippets</h2>
       <!-- Dropdown for languages -->
       <select v-model="selectedLanguage" @change="filterSnippets" class="bg-gray-600 text-white p-2 rounded outline-none">
         <option value="">All Languages</option>
@@ -43,7 +44,7 @@ import axios from 'axios';
 import CodeSnippetPreview from "@/components/CodeSnippetPreview.vue"
 import Config from "../config.js"
 export default {
-    name: "ExploreSnippets",
+    name: "MySnippets",
     components: { CodeSnippetPreview },
     data() {
         return {
@@ -60,7 +61,10 @@ export default {
     },
     methods: {
         fetchCodeSnippets() {
-            axios.get(Config.BACKEND_URL+'/api/v1/code_snippet/')
+            let user_token = localStorage.getItem('user-token');
+            let user_id = localStorage.getItem('user_id');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${user_token}`; // Set default header for all requests
+            axios.get(Config.BACKEND_URL+'/api/v1/user_code_snippet/'+user_id)
                 .then(response => {
                         this.codeSnippets = response.data.data.filter( snippet => {
                             return snippet.CodeSnippetVersions.length > 0

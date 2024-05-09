@@ -27,6 +27,6 @@ export default {
     code: String,
     date: String,
     language: String
-  }
+  },
 }
 </script>
