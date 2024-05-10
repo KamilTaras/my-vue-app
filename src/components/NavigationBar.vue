@@ -11,10 +11,10 @@
           </svg>
           <span class="absolute -top-1 -right-1 block h-3 w-3 rounded-full text-center text-xs text-white bg-red-600" v-if="latestPosts.length > 0">{{ latestPosts.length }}</span>
         </button>
-        <div v-if="showNotifications" class="absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
+        <div v-if="showNotifications" class="z-50 absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
           <template v-for="post in latestPosts" :key="post.id">
-            <a :href="'/code_snippet/' + post.id" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              {{ post.text }} - {{ post.author }}
+            <a :href="'/code_snippet/' + post.id" class="text-sm block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              {{ post.text }}
             </a>
           </template>
           
@@ -46,11 +46,14 @@ export default {
     return {
       showNotifications: false,
       latestPosts: [],
+      pollInterval: null,
       username: localStorage.getItem("username"),
     };
   },
   created() {
     this.fetchLatestPosts();
+    this.startPolling();
+
   },
   computed: {
     isAuthenticated() {
@@ -86,37 +89,37 @@ export default {
       }
     },
     fetchLatestPosts() {
-    let userToken = localStorage.getItem('user-token');
-    let userId = localStorage.getItem('user_id');
-    
-    // Set up the authorization header
-    axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+      let userToken = localStorage.getItem('user-token');
+      let userId = localStorage.getItem('user_id');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
-    // Make the GET request to the notifications endpoint
-    axios
-      .get(`${Config.BACKEND_URL}/api/v1/notifications/${userId}`)
-      .then(response => {
-        // Log the full response to inspect the structure
-        console.log('Full response:', response.data);
+      axios
+        .get(`${Config.BACKEND_URL}/api/v1/notifications/${userId}`)
+        .then((response) => {
+          let notifications = Array.isArray(response.data) ? response.data : response.data.data || [];
+          this.latestPosts = notifications.map((notification) => ({
+            id: notification.NotificationID,
+            text: notification.Text,
+            author: notification.User && notification.User.username ? notification.User.username : 'Anonymous',
+          }));
+        })
+        .catch((error) => {
+          console.error('Error fetching notifications:', error);
+        });
+    },
+    startPolling() {
+      // Poll every 30 seconds
+      this.pollInterval = setInterval(() => {
+        this.fetchLatestPosts();
+      }, 3000);
+    }
 
-        // Extract notifications from the response
-        let notifications = Array.isArray(response.data) ? response.data : response.data.data || [];
-
-        // Map to notifications object suitable for your template
-        this.latestPosts = notifications.map(notification => ({
-          id: notification.NotificationID,
-          text: notification.Text,
-          author: notification.User && notification.User.username ? notification.User.username : 'Anonymous',
-        }));
-
-        // Log the final mapped notifications
-        console.log('Mapped notifications:', this.latestPosts);
-      })
-      .catch(error => {
-        console.error('Error fetching notifications:', error);
-      });
-  }
-
+  },
+  beforeUnmount() {
+    // Clear polling interval
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+    }
   },
   mounted() {
     window.addEventListener('click', this.closeNotifications);
