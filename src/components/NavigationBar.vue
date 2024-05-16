@@ -12,7 +12,7 @@
           <span class="absolute -top-1 -right-1 block h-3 w-3 rounded-full text-center text-xs text-white bg-red-600" v-if="latestPosts.length > 0">{{ latestPosts.length }}</span>
         </button>
         <div v-if="showNotifications" class="z-50 absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
-          <template v-for="post in latestPosts" :key="post.id">
+          <template v-for="post in latestPosts.slice(0,5)" :key="post.id">
             <a :href="'/code_snippet/' + post.id" class="text-sm block px-4 py-2 text-gray-800 hover:bg-gray-200">
               {{ post.text }}
             </a>
@@ -111,7 +111,7 @@ export default {
       // Poll every 30 seconds
       this.pollInterval = setInterval(() => {
         this.fetchLatestPosts();
-      }, 3000);
+      }, 30000);
     }
 
   },
