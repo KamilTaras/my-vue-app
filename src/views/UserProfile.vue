@@ -5,6 +5,43 @@
       <h2 class="text-2xl font-semibold text-white">User Profile</h2>
     </div>
 
+    <div v-if="showSuccess" class="bg-green-500 text-white px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline">{{ successMessage }}</span>
+      <button @click="dismissSuccess" class="absolute top-0 bottom-0 right-0 px-4 py-3 text-lg">
+        &times;
+      </button>
+    </div>
+
+    <div v-if="showError" class="bg-red-500 text-white px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline">{{ errorMessage }}</span>
+      <button @click="dismissError" class="absolute top-0 bottom-0 right-0 px-4 py-3 text-lg">
+        &times;
+      </button>
+    </div>
+    
+    <!-- Edit First Name and Last Name Form -->
+    <div class="mt-10 mb-10">
+      <form @submit.prevent="updateProfile">
+        <div class="mb-3">
+          <input
+            type="text"
+            v-model="first_name"
+            placeholder="First Name"
+            class="p-2 rounded bg-gray-600 text-white w-full"
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="text"
+            v-model="last_name"
+            placeholder="Last Name"
+            class="p-2 rounded bg-gray-600 text-white w-full"
+          />
+        </div>
+        <button type="submit" class="p-2 bg-blue-500 rounded text-white">Update Profile</button>
+      </form>
+    </div>
+    
     <div class="mb-5">
       <h3 class="text-xl font-semibold text-white">{{ username }}</h3>
       <p class="text-gray-300">Number of snippets: {{ snippetCount }}</p>
@@ -23,6 +60,8 @@
 
     <!-- Message when no snippets are available -->
     <div v-else class="text-center text-gray-400 my-5">No data</div>
+
+    
   </div>
 </template>
 
@@ -44,6 +83,8 @@ export default {
   data() {
     return {
       username: '',
+      first_name: '',
+      last_name: '',
       snippetCount: 0,
       languageChartData: {
         labels: [],
@@ -65,6 +106,10 @@ export default {
         },
       },
       weeklyContributions: {},
+      showSuccess: false,
+      successMessage: '',
+      showError: false,
+      errorMessage: '',
     };
   },
   created() {
@@ -75,6 +120,18 @@ export default {
     fetchUserProfile() {
       const username = localStorage.getItem('username');
       this.username = username ? username : 'Anonymous';
+      // Fetch additional profile data
+      const user_id = localStorage.getItem('user_id');
+      const user_token = localStorage.getItem('user-token');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${user_token}`;
+      axios.get(`${Config.BACKEND_URL}/api/v1/user/${user_id}`)
+        .then((response) => {
+          this.first_name = response.data.data.first_name;
+          this.last_name = response.data.data.last_name;
+        })
+        .catch((error) => {
+          console.error('There was an error fetching the user profile:', error);
+        });
     },
 
     fetchUserSnippets() {
@@ -136,6 +193,48 @@ export default {
       });
 
       this.weeklyContributions = weeklyContributions;
+    },
+
+    updateProfile() {
+      const user_token = localStorage.getItem('user-token');
+      const user_id = localStorage.getItem('user_id');
+      axios.defaults.headers.common['Authorization'] = `Bearer ${user_token}`;
+
+      axios.put(`${Config.BACKEND_URL}/api/v1/user/${user_id}`, {
+        first_name: this.first_name,
+        last_name: this.last_name,
+      })
+        .then(() => {
+          this.showSuccessMessage('Profile updated successfully.');
+        })
+        .catch((error) => {
+          this.showErrorMessage('There was an error updating the profile.');
+          console.error('There was an error updating the profile:', error);
+        });
+    },
+
+    showSuccessMessage(message) {
+      this.successMessage = message;
+      this.showSuccess = true;
+      setTimeout(() => {
+        this.showSuccess = false;
+      }, 3000);
+    },
+
+    showErrorMessage(message) {
+      this.errorMessage = message;
+      this.showError = true;
+      setTimeout(() => {
+        this.showError = false;
+      }, 3000);
+    },
+
+    dismissSuccess() {
+      this.showSuccess = false;
+    },
+
+    dismissError() {
+      this.showError = false;
     },
   },
 };
