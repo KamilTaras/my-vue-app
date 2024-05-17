@@ -19,10 +19,12 @@
     <div v-if="snippetCount > 0" class="mt-10">
       <h3 class="text-lg text-white mb-3">Commit History</h3>
       <CommitHistoryChart :weekly-contributions="weeklyContributions" />
+      <calendar-heatmap :values="dailyCommits" :end-date="Date()" :round="2" dark-mode :max="10" :tooltip="false"/>
     </div>
 
     <!-- Message when no snippets are available -->
     <div v-else class="text-center text-gray-400 my-5">No data</div>
+
   </div>
 </template>
 
@@ -32,6 +34,7 @@ import PieChart from '@/components/PieChart.vue';
 import CommitHistoryChart from '@/components/CommitHistoryChart.vue';
 import Config from "../config.js";
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { CalendarHeatmap } from 'vue3-calendar-heatmap'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -40,6 +43,7 @@ export default {
   components: {
     PieChart,
     CommitHistoryChart,
+    CalendarHeatmap,
   },
   data() {
     return {
@@ -65,6 +69,7 @@ export default {
         },
       },
       weeklyContributions: {},
+      dailyCommits: [],
     };
   },
   created() {
@@ -90,6 +95,7 @@ export default {
           this.snippetCount = snippets.length;
           this.prepareLanguageChart(snippets);
           this.prepareCommitHistory(snippets);
+          this.prepareHeatmap(snippets);
         })
         .catch((error) => {
           console.error('There was an error fetching the code snippets:', error);
@@ -137,9 +143,80 @@ export default {
 
       this.weeklyContributions = weeklyContributions;
     },
+
+    prepareHeatmap(snippets){
+      const daily_commits = {};
+      snippets.forEach((snippet) => {
+        const date = new Date(snippet.CreatedAt);
+        const dateString = date.toISOString().split('T')[0];
+        if (daily_commits[dateString] == undefined) {
+          daily_commits[dateString] = 1;
+        } else {
+          daily_commits[dateString] += 1;
+        }
+      });
+      const commits_array = [];
+      for (const [key, value] of Object.entries(daily_commits)) {
+        commits_array.push({date: key, count: value});
+      }
+      this.dailyCommits = commits_array;
+    }
   },
 };
 </script>
 
-<style scoped>
+
+<style lang="scss">
+
+	.vch__container {
+		.vch__legend {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.vch__external-legend-wrapper {
+			margin: 0 8px;
+		}
+	}
+
+	svg.vch__wrapper {
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		line-height: 10px;
+		width: 100%;
+
+		.vch__months__labels__wrapper text.vch__month__label {
+			font-size: 10px;
+		}
+
+		.vch__days__labels__wrapper text.vch__day__label,
+		.vch__legend__wrapper text {
+			font-size: 9px;
+		}
+
+		text.vch__month__label,
+		text.vch__day__label,
+		.vch__legend__wrapper text {
+			fill: #E0E0E0;
+		}
+
+		rect.vch__day__square:hover {
+			stroke: #E0E0E0;
+			stroke-width: 2px;
+			paint-order: stroke;
+		}
+
+		rect.vch__day__square:focus {
+			outline: none;
+		}
+
+		&.dark-mode {
+			text.vch__month__label,
+			text.vch__day__label,
+			.vch__legend__wrapper text {
+				fill: #E0E0E0;
+			}
+		}
+	}
+
 </style>
