@@ -20,6 +20,24 @@
             />
         </div>
 
+        <!-- First name input -->
+        <div class="items-center mx-auto mt-5 rounded">
+            <input
+                v-model="first_name"
+                class="bg-gray-600 text-white p-2 rounded outline-none"
+                placeholder="First name"
+            />
+        </div>
+
+        <!-- Last name input -->
+        <div class="items-center mx-auto mt-5 rounded">
+            <input
+                v-model="last_name"
+                class="bg-gray-600 text-white p-2 rounded outline-none"
+                placeholder="Last name"
+            />
+        </div>
+
         <!-- Password input -->
         <div class="items-center mx-auto mt-5 rounded">
             <input
@@ -60,6 +78,8 @@ export default {
     name: "SignupPage",
     data() {
         return {
+            first_name: "",
+            last_name: "",
             username: "",
             password: "",
             confirmPassword: "",
@@ -76,9 +96,17 @@ export default {
                 return;
             }
 
+            if (this.first_name == "" || this.last_name == "") {
+                this.showError = true;
+                this.errorMessage = "First name and last name should be filled out";
+                return;
+            }
+
             const registrationData = {
                 username: this.username,
                 password: this.password,
+                first_name: this.first_name,
+                last_name: this.last_name,
             };
 
             // Send the registration request to the backend

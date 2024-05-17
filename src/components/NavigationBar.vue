@@ -13,9 +13,7 @@
         </button>
         <div v-if="showNotifications" class="z-50 absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
           <template v-for="post in latestPosts.slice(0,5)" :key="post.id">
-            <a :href="'/code_snippet/' + post.id" class="text-sm block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              {{ post.text }}
-            </a>
+            <span class="text-sm block px-4 py-2 text-gray-800 hover:bg-gray-200" v-html="post.text"></span>
           </template>
           
           <div v-if="latestPosts.length === 0" class="text-center text-gray-400 py-2">
@@ -66,16 +64,15 @@ export default {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decode payload of the token
         return payload.exp > Date.now() / 1000; // Check if token is expired
       } catch (e) {
-        return false; // If there's an error, assume the token is invalid
+        localStorage.clear();
+        return false;
       }
     }
   },
   methods: {
     
     logout() {
-      localStorage.removeItem('user-token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('user-id');
+      localStorage.clear();
       window.location.href = '/';
     },
     
@@ -91,6 +88,11 @@ export default {
     fetchLatestPosts() {
       let userToken = localStorage.getItem('user-token');
       let userId = localStorage.getItem('user_id');
+      
+      if (userId == null) {
+        return
+      }
+      
       axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
       axios

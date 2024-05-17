@@ -1,6 +1,17 @@
 <template>
     
     <div class="max-w-max mx-auto bg-gray-700 rounded p-5 my-5">
+        <!-- Error Dialog Box -->
+        <div v-if="showError" class="bg-red-500 text-white px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline">{{ errorMessage }}</span>
+            <button
+                @click="dismissError"
+                class="absolute top-0 bottom-0 right-0 px-4 py-3 text-lg"
+            >
+                &times;
+            </button>
+        </div>
+
         <!-- Search input -->
         <div class="items-center mx-auto mt-5 rounded">
             <input
@@ -38,6 +49,8 @@ export default {
         return {
             username: "",
             password: "",
+            showError: false,
+            errorMessage: ""
         };
     },
     methods: {
@@ -56,10 +69,21 @@ export default {
                         window.location.href = '/';
                     }
                 )
-                .catch(error => {
-                    alert('There was an error fetching the code snippets:', error);
+                .catch((error) => {
+                    if (error.response && error.response.data) {
+                        const responseError = error.response.data;
+                        this.errorMessage = responseError.message || 'An unexpected error occurred';
+                    } else {
+                        this.errorMessage = 'An unexpected error occurred';
+                    }
+                    this.showError = true;
                 });
         },
+
+        dismissError() {
+            this.showError = false;
+            this.errorMessage = "";
+        }
     }
 }
 </script>

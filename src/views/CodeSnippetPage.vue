@@ -81,7 +81,7 @@ export default {
                     "text": this.commentText,
                     "line": this.lines[0],
                     "isGenerated": false,
-                    "userID": localStorage.getItem('user-id'),
+                    "userID": localStorage.getItem('user_id'),
                 })
                     .then(response => {
                         console.log(response.data);
@@ -106,7 +106,7 @@ export default {
                                 "text": comment.Text,
                                 "lines": [comment.Line, comment.Line],
                                 "date": this.convertToReadableFormat(comment.CreatedAt),
-                                "username": comment.User ? comment.User.username : 'anonymous',
+                                "username": comment.User ? comment.User.username : "anonymous",
                             };
                         });
                         acc[version.CodeSnippetVersionID] = comments;
