@@ -47,7 +47,6 @@
         if (this.$refs.commitChart === undefined) {
           return;
         }
-
         this.chartInstance = new ChartJS(this.$refs.commitChart.getContext('2d'), {
           type: 'bar',
           data: {
@@ -65,9 +64,25 @@
               tooltip: { enabled: true },
             },
             scales: {
-              x: { title: { display: true, text: 'Week' } },
-              y: { title: { display: true, text: 'Commits' }, beginAtZero: true },
+              x: { 
+                title: { display: true, text: 'Week', color: '#E0E0E0' },
+                ticks: { color: '#E0E0E0' }
+              },
+              y: { 
+                title: { display: true, text: 'Commits', color: '#E0E0E0' },
+                ticks: { max: 10, stepSize: 1, color: '#E0E0E0' },
+                beginAtZero: false
+              },
             },
+            layout: {
+              padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+              }
+            },
+            backgroundColor: '#111827'
           },
         });
       },

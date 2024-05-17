@@ -1,3 +1,3 @@
 export default Object.freeze({
-    BACKEND_URL: "http://34.255.239.216"
+    BACKEND_URL: "http://127.0.0.1:8080"
 });
