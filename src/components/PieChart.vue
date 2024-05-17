@@ -1,7 +1,7 @@
 <!-- PieChart.vue -->
 <template>
     <div>
-      <Pie v-if="loaded" :data="chartData" :options="options" />
+      <Pie v-if="loaded" :data="chartData" :options="options"/>
     </div>
   </template>
   

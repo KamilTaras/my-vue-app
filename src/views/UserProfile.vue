@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-2xl mx-auto mt-5 p-5 bg-gray-700 rounded">
+  <div class="max-w-5xl mx-auto mt-5 p-5 bg-gray-700 rounded">
     <!-- User Profile Information -->
     <div class="flex justify-between items-center mb-5">
       <h2 class="text-2xl font-semibold text-white">User Profile</h2>
@@ -42,13 +42,13 @@
       </form>
     </div>
     
-    <div class="mb-5">
+    <div>
       <h3 class="text-xl font-semibold text-white">{{ username }}</h3>
       <p class="text-gray-300">Number of snippets: {{ snippetCount }}</p>
     </div>
 
     <!-- Programming Languages Chart -->
-    <div v-if="snippetCount > 0">
+    <div v-if="snippetCount > 0" class="p-10">
       <PieChart :chart-data="languageChartData" :options="chartOptions" />
     </div>
 
@@ -98,12 +98,21 @@ export default {
             ],
           },
         ],
+        
       },
       chartOptions: {
         responsive: true,
         plugins: {
           legend: {
             position: 'right',
+            labels: {
+                padding: 30,
+                boxWidth: 50,
+                font: {
+                  size: 22,
+                },
+                color: "white",
+            },
           },
         },
       },
