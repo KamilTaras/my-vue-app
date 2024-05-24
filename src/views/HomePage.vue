@@ -1,7 +1,9 @@
 <template>
+    <div class="flex h-full flex-col">
       <form @submit.prevent="handleSubmit" class = "flex flex-col h-full">
         <div class = "p-10">
-          <input type="text" v-model="snippetTitle" placeholder="Title" class = "bg-gray-600 text-white py-2 px-4 rounded outline-none text-2xl font-semibold" />
+          <input type="text" v-model="snippetTitle" placeholder="Title" class="w-full bg-gray-800 text-white py-2 px-4 outline-none text-xl font-semibold border-b-2 border-white focus:border-blue-500" 
+          style="border:none;border-bottom:2px solid white;"/>
         </div>
         <div class="flex-grow px-10">
           <code-editor width="100%" height="100%" line-nums="true" v-model="snippetText" theme="github-dark"
@@ -19,6 +21,7 @@
           <button type="submit" class="bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-2 px-4 rounded">Post It</button>
         </div>
       </form>
+    </div>
 </template>
 
 <script>
