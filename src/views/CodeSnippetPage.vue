@@ -101,14 +101,18 @@ export default {
         },
         submitComment(codeSnippetVersionID) {
             if (this.commentText !== '') {
-                axios.post(Config.BACKEND_URL + '/api/v1/review_comment/', {
+
+                let data = {
                     "codeSnippetVersionID": codeSnippetVersionID,
                     "text": this.commentText,
                     "line": this.lines[0],
                     "isGenerated": false,
                     "userID": localStorage.getItem('user_id'),
-                    "replyCommentID": this.answering,
-                })
+                }
+                if (this.answering) {
+                    data.replyCommentID = this.answering;
+                }
+                axios.post(Config.BACKEND_URL + '/api/v1/review_comment/', data)
                     .then(response => {
                         console.log(response.data);
                         this.fetchCodeSnippet()
