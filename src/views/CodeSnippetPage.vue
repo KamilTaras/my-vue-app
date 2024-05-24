@@ -47,6 +47,7 @@
 import axios from 'axios';
 import Config from '../config.js';
 import CodeToComment from '../components/CodeToComment.vue';
+import { comment } from 'postcss';
 export default {
     name: "CodeSnippetPage",
     data() {
@@ -80,6 +81,8 @@ export default {
         //  "userID": "string"
         startAnswering(commentID) {
             this.answering = commentID;
+            console.log(this.answering);
+            console.log(this.comments);
         },
         submitComment(codeSnippetVersionID) {
             if (this.commentText !== '') {
@@ -110,16 +113,21 @@ export default {
                     this.comments = response.data.data.CodeSnippetVersions.reduce((acc, version) => {
                         var comments = version.ReviewComments.map(comment => {
                             return {
-                                "id": comment.ReviewCommentID,
+                                "id": comment.CommentID,
                                 "text": comment.Text,
                                 "lines": [comment.Line, comment.Line],
                                 "date": this.convertToReadableFormat(comment.CreatedAt),
                                 "username": comment.User ? comment.User.username : "anonymous",
+                                "answering": comment.ReplyCommentID,
                             };
                         });
                         acc[version.CodeSnippetVersionID] = comments;
                         return acc;
                     }, {});
+                    for (comment in this.comments[version.CodeSnippetVersionID]) {
+                        console.log(comment);
+                    }
+                        
                     console.log(this.comments);
                 }
                 )
