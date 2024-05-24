@@ -108,6 +108,7 @@ import CopyCode from "./CopyCode.vue";
 import "./themes-base16.css";
 import "./themes.css";
 
+
 export default {
   components: {
     DropdownMenu,
@@ -292,21 +293,33 @@ export default {
       this.left = -e.target.scrollLeft;
     },
     resizer() {
-      // textareaResizer
+      // Function to apply size adjustments
+      const applyResize = (entries) => {
+        for (const entry of entries) {
+          if (entry.target === this.$refs.textarea) {
+            this.scrollBarWidth = entry.target.offsetWidth - entry.target.clientWidth;
+            this.scrollBarHeight = entry.target.offsetHeight - entry.target.clientHeight;
+            this.textareaHeight = entry.target.offsetHeight;
+          } else if (this.$refs.lineNums && entry.target === this.$refs.lineNums) {
+            this.lineNumsWidth = entry.target.offsetWidth;
+          }
+        }
+      };
+
+      // ResizeObserver with requestAnimationFrame
       const textareaResizer = new ResizeObserver((entries) => {
-        this.scrollBarWidth = entries[0].target.offsetWidth - entries[0].target.clientWidth;
-        this.scrollBarHeight = entries[0].target.offsetHeight - entries[0].target.clientHeight;
-        this.textareaHeight = entries[0].target.offsetHeight;
+        window.requestAnimationFrame(() => applyResize(entries));
       });
       textareaResizer.observe(this.$refs.textarea);
-      // lineNumsResizer
-      const lineNumsResizer = new ResizeObserver((entries) => {
-        this.lineNumsWidth = entries[0].target.offsetWidth;
-      });
+
       if (this.$refs.lineNums) {
+        const lineNumsResizer = new ResizeObserver((entries) => {
+          window.requestAnimationFrame(() => applyResize(entries));
+        });
         lineNumsResizer.observe(this.$refs.lineNums);
       }
     },
+  
     copy() {
       if (document.execCommand("copy")) {
         this.$refs.textarea.select();

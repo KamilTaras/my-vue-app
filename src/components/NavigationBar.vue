@@ -11,12 +11,11 @@
           </svg>
           <span class="absolute -top-1 -right-1 block h-3 w-3 rounded-full text-center text-xs text-white bg-red-600" v-if="latestPosts.length > 0">{{ latestPosts.length }}</span>
         </button>
-        <div v-if="showNotifications" class="absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
-          <template v-for="post in latestPosts" :key="post.id">
-            <a :href="'/post/' + post.id" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              {{ post.title }} - {{ post.author }}
-            </a>
+        <div v-if="showNotifications" class="z-50 absolute top-0 left-0 py-2 w-48 bg-white rounded-lg shadow-xl">
+          <template v-for="post in latestPosts.slice(0,5)" :key="post.id">
+            <span class="text-sm block px-4 py-2 text-gray-800 hover:bg-gray-200" v-html="post.text"></span>
           </template>
+          
           <div v-if="latestPosts.length === 0" class="text-center text-gray-400 py-2">
             No new notifications
           </div>
@@ -45,11 +44,14 @@ export default {
     return {
       showNotifications: false,
       latestPosts: [],
+      pollInterval: null,
       username: localStorage.getItem("username"),
     };
   },
   created() {
     this.fetchLatestPosts();
+    this.startPolling();
+
   },
   computed: {
     isAuthenticated() {
@@ -62,16 +64,15 @@ export default {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decode payload of the token
         return payload.exp > Date.now() / 1000; // Check if token is expired
       } catch (e) {
-        return false; // If there's an error, assume the token is invalid
+        localStorage.clear();
+        return false;
       }
     }
   },
   methods: {
     
     logout() {
-      localStorage.removeItem('user-token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('user-id');
+      localStorage.clear();
       window.location.href = '/';
     },
     
@@ -85,15 +86,42 @@ export default {
       }
     },
     fetchLatestPosts() {
-      axios.get(Config.BACKEND_URL + '/api/v1/post/') 
-        .then(response => {
-          // Assuming the API sends back an array of posts sorted by creation date
-          this.latestPosts = response.data.data.slice(0, 3);
+      let userToken = localStorage.getItem('user-token');
+      let userId = localStorage.getItem('user_id');
+      
+      if (userId == null) {
+        return
+      }
+      
+      axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+      axios
+        .get(`${Config.BACKEND_URL}/api/v1/notifications/${userId}`)
+        .then((response) => {
+          let notifications = Array.isArray(response.data) ? response.data : response.data.data || [];
+          this.latestPosts = notifications.map((notification) => ({
+            id: notification.NotificationID,
+            text: notification.Text,
+            author: notification.User && notification.User.username ? notification.User.username : 'Anonymous',
+          }));
         })
-        .catch(error => {
-          console.error('There was an error fetching the latest posts:', error);
+        .catch((error) => {
+          console.error('Error fetching notifications:', error);
         });
     },
+    startPolling() {
+      // Poll every 30 seconds
+      this.pollInterval = setInterval(() => {
+        this.fetchLatestPosts();
+      }, 30000);
+    }
+
+  },
+  beforeUnmount() {
+    // Clear polling interval
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+    }
   },
   mounted() {
     window.addEventListener('click', this.closeNotifications);

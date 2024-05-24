@@ -9,7 +9,7 @@
                 <div v-for="comment in comments[codeSnippetVersion.CodeSnippetVersionID]" :key="comment.id"
                 :class="{'max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5': true, 'border-2 border-blue-500': answering === comment.id}"
                 >
-                    <p class="text-gray-400 mb-4">@anonymous</p>
+                    <p class="text-gray-400 mb-4">@{{ comment.username }}</p>
                     <p><span class="text-xs font-semibold text-blue-100 bg-blue-600 px-2 py-1 rounded">Line: {{
             comment.lines[0] }}-{{ comment.lines[comment.lines.length - 1] }}</span></p>
                     <div class="w-full p-2 text-gray-300 bg-gray-800 rounded">
@@ -88,7 +88,7 @@ export default {
                     "text": this.commentText,
                     "line": this.lines[0],
                     "isGenerated": false,
-                    "userID": localStorage.getItem('user-id'),
+                    "userID": localStorage.getItem('user_id'),
                     "replyCommentID": this.answering,
                 })
                     .then(response => {
@@ -114,6 +114,7 @@ export default {
                                 "text": comment.Text,
                                 "lines": [comment.Line, comment.Line],
                                 "date": this.convertToReadableFormat(comment.CreatedAt),
+                                "username": comment.User ? comment.User.username : "anonymous",
                             };
                         });
                         acc[version.CodeSnippetVersionID] = comments;
