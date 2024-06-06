@@ -3,6 +3,13 @@
         <div v-if="codeSnippet">
             <div v-for="codeSnippetVersion in codeSnippet.CodeSnippetVersions"
                 :key="codeSnippetVersion.CodeSnippetVersionID">
+                <!-- Copy and share snippet buttons -->
+                <div class="flex justify-center mb-5">
+                    <div class="max-w-2xl bg-gray-700 rounded p-5">
+                        <button class="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded" @click="copySnippet(codeSnippetVersion.CodeSnippetVersionID, codeSnippetVersion.Text)">Copy Snippet</button>
+                        <button class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded ml-4" @click="shareSnippet(codeSnippetVersion.CodeSnippetVersionID)">Share Snippet</button>
+                    </div>
+                </div>
                 <code-to-comment :Text="codeSnippetVersion.Text" :CreatedAt="codeSnippet.CreatedAt"
                     :Username="codeSnippet.User ? codeSnippet.User.username : 'anonymous'"
                     @lines="getLines"></code-to-comment>
@@ -39,6 +46,7 @@
                     </div>
                 </div>
 
+                <!-- Add comment section -->
                 <div class="max-w-2xl mx-auto bg-gray-700 rounded p-5 my-5">
                     <div class="flex flex-col space-y-4">
                         <textarea
@@ -58,11 +66,16 @@
     </div>
 </template>
 
+
+
+
+
 <script>
 import axios from 'axios';
 import Config from '../config.js';
 import CodeToComment from '../components/CodeToComment.vue';
 //import { comment } from 'postcss';
+
 export default {
     name: "CodeSnippetPage",
     data() {
@@ -72,6 +85,7 @@ export default {
             lines: [1],
             comments: {},
             answering: "",
+            snippetURL: "",
         };
     },
     created() {
@@ -124,7 +138,6 @@ export default {
             this.commentText = "";
         },
         fetchCodeSnippet() {
-            console.log(this.$route.params.code_snippet_id);
             axios.get(Config.BACKEND_URL + '/api/v1/code_snippet/' + this.$route.params.code_snippet_id)
                 .then(response => {
                     console.log(response.data.data);
@@ -177,6 +190,53 @@ export default {
             const date = new Date(datetimeStr);
             return date.toLocaleDateString('en-US', options);
         },
+        shareSnippet(codeSnippetVersionID, snippetText) {
+    // Create a temporary textarea element to copy the snippet code
+    const tempTextarea = document.createElement('textarea');
+    tempTextarea.value = snippetText;
+    document.body.appendChild(tempTextarea);
+
+    // Select the text within the textarea
+    tempTextarea.select();
+    tempTextarea.setSelectionRange(0, 99999); /* For mobile devices */
+
+    // Copy the selected text
+    document.execCommand('copy');
+
+    // Remove the textarea element
+    document.body.removeChild(tempTextarea);
+
+    // Compose the message to be shared on Reddit
+    const redditMessage = `Check out this snippet!\n\n${snippetText}\n\n${this.snippetURL}`;
+
+    // Show a dialog with the snippet URL and option to share on Reddit
+    const shareDialog = confirm(`Share this snippet: ${this.snippetURL}\n\nWould you like to share it on Reddit?`);
+    if (shareDialog) {
+        // If user wants to share on Reddit, navigate to Reddit share URL
+        const redditShareURL = `https://www.reddit.com/submit?title=SnippetCode&textbox=${encodeURIComponent(redditMessage)}`;
+        window.open(redditShareURL, "_blank");
+    }
+},
+
+        copySnippet(codeSnippetVersionID, snippetText) {
+            // Create a temporary textarea element
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = snippetText;
+            document.body.appendChild(tempTextarea);
+            
+            // Select the text within the textarea
+            tempTextarea.select();
+            tempTextarea.setSelectionRange(0, 99999); /* For mobile devices */
+            
+            // Copy the selected text
+            document.execCommand('copy');
+            
+            // Remove the textarea element
+            document.body.removeChild(tempTextarea);
+            
+            // Optionally, provide feedback to the user
+            alert('Snippet copied to clipboard!');
+        }
     }
 }
 </script>
