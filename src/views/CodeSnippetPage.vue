@@ -24,7 +24,7 @@
                 class="text-xs text-blue-100 font-semibold bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded float-right">Answer</button>
             </p>
           </div>
-          <div v-if="comment.replies.length > 0" class="ml-5 border-l border-gray-200 pl-5">
+          <div v-if="comment.replies.length > 0|| answering==comment.id" class="ml-5 border-l border-gray-200 pl-5">
             <div v-for="reply in comment.replies" :key="reply.id"
               class="max-w-2xl mx-auto bg-gray-700 my-5 border-t border-gray-600 pt-5">
               <p class="text-gray-400 mb-4">@{{ reply.username }}</p>
@@ -36,6 +36,15 @@
                   <!-- <button @click="startAnswering(reply.id)"
                     class="text-xs text-blue-100 font-semibold bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded float-right">Answer</button> -->
                 </p>
+              </div>
+            </div>
+            <div v-if="answering==comment.id" class="max-w-2xl mx-auto bg-gray-700 my-5 border-t border-gray-600 pt-5">
+              <div class="flex flex-col space-y-4">
+                <textarea
+                  class="w-full p-2 text-gray-300 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Add a comment..." v-model="commentText"></textarea>
+                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+                  @click="submitComment(codeSnippetVersion.CodeSnippetVersionID)">Submit Comment</button>
               </div>
             </div>
           </div>
