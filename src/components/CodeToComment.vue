@@ -21,7 +21,7 @@
         </div>
         <div class='bg-black p-2 rounded mb-5'>
             <div v-for="(line, index) in Text.split('\n')" :key="index" 
-                :class="{ 'bg-blue-800': selectedLines.includes(index + 1) || lastSelectedLines.includes(index + 1)}"
+                :class="{ 'bg-blue-800': (selectedLines[0] <= index + 1 && index + 1 <= selectedLines[1]) || (selectedLines[0] >= index + 1 && index + 1 >= selectedLines[1])||(lastSelectedLines[0] <= index + 1 && index + 1 <= lastSelectedLines[1]) || (lastSelectedLines[0] >= index + 1 && index + 1 >= lastSelectedLines[1])}"
                 :data-line="index + 1" @mouseenter="addToSelection" 
                 @mousedown = "firstAddToSelection" >
                 <pre>{{index+1}}	{{ line }}</pre>
@@ -171,18 +171,18 @@ export default {
         firstAddToSelection(event) {
             
             const lineNumber = parseInt(event.currentTarget.getAttribute('data-line'));
-            this.selectedLines.push(lineNumber);
+            this.selectedLines[0]=lineNumber;
         },
         addToSelection(event) {
             if (this.mouseIsDown) {
                 const lineNumber = parseInt(event.currentTarget.getAttribute('data-line'));
-                if (!this.selectedLines.includes(lineNumber)) {
-                    this.selectedLines.push(lineNumber);
-                }
+                this.selectedLines[1] = lineNumber;
+                
             }
         },
         getSelectedLines() {
-            this.$emit("lines", this.selectedLines);
+            this.$emit("lines", this.selectedLines.sort());
+            console.log(this.selectedLines);
             this.lastSelectedLines = this.selectedLines;
             this.selectedLines = [];
             // Now you can use the selectedLines array
