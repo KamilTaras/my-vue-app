@@ -1,24 +1,28 @@
 <template>
-  <form @submit.prevent="handleSubmit" class="flex flex-col h-full">
-    <div class="p-10">
-      <input ref="title" type="text" v-model="snippetTitle" placeholder="Title" class="bg-gray-600 text-white py-2 px-4 rounded outline-none text-2xl font-semibold" />
+    <div class="flex h-full flex-col">
+      <form @submit.prevent="handleSubmit" class = "flex flex-col h-full">
+        <div class = "p-10">
+          <input type="text" v-model="snippetTitle" placeholder="Title" class="w-full bg-gray-800 text-white py-2 px-4 outline-none text-xl font-semibold border-b-2 border-white focus:border-blue-500" 
+          style="border:none;border-bottom:2px solid white;"/>
+        </div>
+        <div class="flex-grow px-10">
+          <code-editor width="100%" height="100%" line-nums="true" v-model="snippetText" theme="github-dark"
+            :languages="languages"
+            @lang="getLanguage">
+          </code-editor>
+          <!-- <textarea  @input="autoResizeTextarea" class="autosize" placeholder="Snippet Text"></textarea> -->
+        </div>
+        <div class="flex justify-end px-10 pb-5 pt-10 text-xl">
+          <label>
+            <input type="checkbox" v-model="isPrivate" class="h-4 w-4"/> Private Snippet
+          </label>
+        </div>
+        <div class="flex justify-between px-10 pt-5 pb-10">
+          <button type="button" @click="startTutorial" class="bg-blue-500 hover:bg-blue-600 text-white text-2xl font-semibold py-2 px-4 rounded">Start Tutorial</button>
+          <button ref="submitButton" type="submit" class="bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-2 px-4 rounded">Post It</button>
+        </div>
+      </form>
     </div>
-    <div class="flex-grow px-10">
-      <code-editor ref="codeEditor" width="100%" height="100%" line-nums="true" v-model="snippetText" theme="github-dark"
-        :languages="languages"
-        @lang="getLanguage">
-      </code-editor>
-    </div>
-    <div class="flex justify-end px-10 pb-5 pt-10 text-xl">
-      <label>
-        <input ref="privateCheckbox" type="checkbox" v-model="isPrivate" class="h-4 w-4"/> Private Snippet
-      </label>
-    </div>
-    <div class="flex justify-between px-10 pt-5 pb-10">
-      <button type="button" @click="startTutorial" class="bg-blue-500 hover:bg-blue-600 text-white text-2xl font-semibold py-2 px-4 rounded">Start Tutorial</button>
-      <button ref="submitButton" type="submit" class="bg-green-500 hover:bg-green-600 text-white text-2xl font-semibold py-2 px-4 rounded">Post It</button>
-    </div>
-  </form>
 </template>
 
 <script>

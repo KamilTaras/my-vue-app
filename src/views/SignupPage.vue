@@ -1,69 +1,40 @@
 <template>
-    <div class="max-w-max mx-auto bg-gray-700 rounded p-5 my-5">
+    <div class="max-w-max mx-auto bg-gray-700 rounded-lg shadow-lg p-6 my-5">
+
         <!-- Error Dialog Box -->
-        <div v-if="showError" class="bg-red-500 text-white px-4 py-3 rounded relative mb-4" role="alert">
+        <div v-if="showError" class="bg-red-500 text-gray-100 px-4 py-3 rounded relative mb-4" role="alert">
             <span class="block sm:inline">{{ errorMessage }}</span>
-            <button
-                @click="dismissError"
-                class="absolute top-0 bottom-0 right-0 px-4 py-3 text-lg"
-            >
-                &times;
-            </button>
+            <button @click="dismissError" class="absolute top-0 bottom-0 right-0 px-4 py-3 text-lg">&times;</button>
         </div>
 
-        <!-- Username input -->
-        <div class="items-center mx-auto mt-5 rounded">
-            <input
-                v-model="username"
-                class="bg-gray-600 text-white p-2 rounded outline-none"
-                placeholder="Username"
-            />
+        <!-- Registration Form -->
+        <div class="mb-4">
+            <label class="block text-gray-100 text-sm font-bold mb-2" for="username">Username</label>
+            <input v-model="username" id="username" type="text" placeholder="Username" class="bg-gray-600 shadow appearance-none rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline" />
         </div>
 
-        <!-- First name input -->
-        <div class="items-center mx-auto mt-5 rounded">
-            <input
-                v-model="first_name"
-                class="bg-gray-600 text-white p-2 rounded outline-none"
-                placeholder="First name"
-            />
+        <div class="mb-4">
+            <label class="block text-gray-100 text-sm font-bold mb-2" for="first_name">First Name</label>
+            <input v-model="first_name" id="first_name" type="text" placeholder="First Name" class="bg-gray-600 shadow appearance-none rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline" />
         </div>
 
-        <!-- Last name input -->
-        <div class="items-center mx-auto mt-5 rounded">
-            <input
-                v-model="last_name"
-                class="bg-gray-600 text-white p-2 rounded outline-none"
-                placeholder="Last name"
-            />
+        <div class="mb-4">
+            <label class="block text-gray-100 text-sm font-bold mb-2" for="last_name">Last Name</label>
+            <input v-model="last_name" id="last_name" type="text" placeholder="Last Name" class="bg-gray-600 shadow appearance-none rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline" />
         </div>
 
-        <!-- Password input -->
-        <div class="items-center mx-auto mt-5 rounded">
-            <input
-                type="password"
-                v-model="password"
-                class="bg-gray-600 text-white p-2 rounded outline-none"
-                placeholder="Password"
-            />
+        <div class="mb-6">
+            <label class="block text-gray-100 text-sm font-bold mb-2" for="password">Password</label>
+            <input v-model="password" id="password" type="password" placeholder="Password" class="bg-gray-600 shadow appearance-none rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline" />
         </div>
 
-        <!-- Confirm password input -->
-        <div class="items-center mx-auto mt-5 rounded">
-            <input
-                type="password"
-                v-model="confirmPassword"
-                class="bg-gray-600 text-white p-2 rounded outline-none"
-                placeholder="Confirm Password"
-            />
+        <div class="mb-6">
+            <label class="block text-gray-100 text-sm font-bold mb-2" for="confirmPassword">Confirm Password</label>
+            <input v-model="confirmPassword" id="confirmPassword" type="password" placeholder="Confirm Password" class="bg-gray-600 shadow appearance-none rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline" />
         </div>
 
-        <div class="flex pt-5 pb-10">
-            <button
-                type="submit"
-                class="bg-blue-400 hover:bg-blue-600 text-white text-xl font-semibold py-2 px-4 rounded"
-                @click="register"
-            >
+        <div class="flex items-center justify-between">
+            <button @click="register" class="bg-blue-500 hover:bg-blue-700 text-gray-100 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                 Sign Up
             </button>
         </div>
