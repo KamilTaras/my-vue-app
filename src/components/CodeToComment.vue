@@ -160,16 +160,12 @@ export default {
         startSelection() {
             this.lastSelectedLines = [];
             this.mouseIsDown = true;
-
-            //this.addToSelection(event);
         },
         stopSelection() {
             this.mouseIsDown = false;
             this.getSelectedLines();
-            
         },
         firstAddToSelection(event) {
-            
             const lineNumber = parseInt(event.currentTarget.getAttribute('data-line'));
             this.selectedLines[0]=lineNumber;
         },
@@ -185,7 +181,52 @@ export default {
             console.log(this.selectedLines);
             this.lastSelectedLines = this.selectedLines;
             this.selectedLines = [];
-            // Now you can use the selectedLines array
+        },
+        copyToClipboard() {
+            const lines = this.Text.split('\n');
+            const selectedText = this.lastSelectedLines.map(lineNumber => lines[lineNumber - 1]).join('\n');
+
+            const textarea = document.createElement('textarea');
+            textarea.value = selectedText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            this.showNotification = true; // Show notification
+            setTimeout(() => {
+                this.showNotification = false; // Hide notification after 2 seconds
+            }, 2000);
+        },
+        showShareDialog() {
+            this.shareDialogVisible = true;
+        },
+        hideShareDialog() {
+            this.shareDialogVisible = false;
+        },
+        copyLinkToClipboard() {
+            const link = window.location.href; // Example link, you can customize this
+            const textarea = document.createElement('textarea');
+            textarea.value = link;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            this.showLinkNotification = true; // Show link notification
+            setTimeout(() => {
+                this.showLinkNotification = false; // Hide link notification after 2 seconds
+            }, 2000);
+        },
+        shareOnPlatform(platform) {
+            const link = encodeURIComponent(window.location.href); // Example link, you can customize this
+            let url = '';
+            if (platform === 'twitter') {
+                url = `https://twitter.com/intent/tweet?url=${link}`;
+            } else if (platform === 'reddit') {
+                url = `https://www.reddit.com/submit?url=${link}`;
+            }
+            window.open(url, '_blank');
         }
     }
 }
